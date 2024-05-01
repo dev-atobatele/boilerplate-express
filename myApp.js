@@ -42,7 +42,13 @@ app.get("/json", (req, res) => {
     });
   });
 
-
+  app.route('/name').get((req,res)=>{
+    const first = req.query.first
+    const last = req.query.last
+    res.json({
+      'name' : `${first} ${last}`
+    })
+  }).post((req,res)=>{})
 
 
 
