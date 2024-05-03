@@ -1,6 +1,7 @@
 let express = require('express');
 let app = express();
-
+var bodyParser = require('body-parser');
+var env = require('dotenv').config();
 // Only use each endpoint once, if not express will use the first occurence
 
 app.get("/", function(req, res) {
@@ -20,12 +21,22 @@ app.get("/json", (req, res) => {
       });
 } );
 */
-
+  app.use(bodyParser.urlencoded({extended:false}))
+  app.use(bodyParser.json())
 
   app.use("/json", function middleware(req, res, next) {
     console.log(`${req.method} ${req.path} - ${req.ip}`);
     next();
   })
+  var message= 'Hello json';
+  app.get("/json", (req, res) => {
+    if ( process.env['MESSAGE_STYLE'] === "uppercase") {
+        res.json({ "message": message.toUpperCase() });
+    }
+    else {
+      res.json({ "message": message });
+    }
+  });  
 
   app.get('/now', function middleware(req, res, next) {
     req.time = new Date().toString();  // Hypothetical synchronous operation
@@ -48,7 +59,12 @@ app.get("/json", (req, res) => {
     res.json({
       'name' : `${first} ${last}`
     })
-  }).post((req,res)=>{})
+  }).post((req,res)=>{
+    var string = `${req.body.first} ${req.body.last}`
+    res.json({
+      name:string
+    })
+  })
 
 
 
